@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>444.6</string>
+	<string>444.7</string>
 	<key>AMApplicationVersion</key>
 	<string>2.8</string>
 	<key>AMDocumentVersion</key>
@@ -61,9 +61,12 @@
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
 for i in "$@"; do
-	filen="$(basename "$i")"
-	ext="${filen#*.}"
-	echo $ext
+	case ${i##*/} in
+		(*0.tar.*) ext="0.tar."${i##*.};;
+		(*.tar.*) ext="tar."${i##*.};;
+		(?*.*) ext=${i##*.};;
+		(*) ext=;;
+	esac
 	mv "$i" "$(dirname "$i")/`openssl rand -hex 4`.$ext"; 
 done</string>
 					<key>CheckedForUserDefaultShell</key>
@@ -178,7 +181,7 @@ done</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>378.000000:325.000000</string>
+				<string>449.500000:596.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
