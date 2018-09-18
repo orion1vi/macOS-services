@@ -11,7 +11,7 @@ brew install parallel
 brew install zopfli
 ```
 
-To add folder action service, open PNG Optimize.workflow and press Install.
+To add folder action service, open "PNG Optimize.workflow" and press Install.
 
 Installation directory: ~/Library/Workflows/Applications/Folder Actions/
 
