@@ -394,7 +394,7 @@ echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | g
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>508.500000:513.000000</string>
+				<string>508.500000:388.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
@@ -570,7 +570,7 @@ osascript -e 'display notification "'"$r"'" with title "'"$t"'"'
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>508.500000:793.000000</string>
+				<string>508.500000:581.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>
