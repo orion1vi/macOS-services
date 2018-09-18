@@ -11,5 +11,8 @@ To add service:
 ```bash
 bash add_service.sh
 ```
+Or open "Generate Random File Name.workflow" and press Install.
+
+Installation directory: ~/Library/Services/
 # Usage
 Select one or more files in Finder, right click to open context menu, move down to Services and press on "Generate Random File Name"
