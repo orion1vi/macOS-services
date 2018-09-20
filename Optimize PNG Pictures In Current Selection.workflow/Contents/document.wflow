@@ -61,7 +61,7 @@
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
 
-list=$(find "$1" | grep -i .png)
+list=$(find "$@" -maxdepth 1 | grep -i .png)
 e=$(echo "$list" | (time /usr/local/bin/parallel /usr/local/bin/zopflipng -y {} {}) 2&gt;&amp;1 | grep real)
 
 #Time notification
@@ -183,7 +183,7 @@ fi</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>508.500000:359.000000</string>
+				<string>508.500000:356.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
 			</dict>

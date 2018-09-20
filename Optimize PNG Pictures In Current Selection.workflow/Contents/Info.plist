@@ -8,7 +8,7 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>Optimize PNG pictures</string>
+				<string>Optimize PNG Pictures In Current Selection</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>runWorkflowAsService</string>
