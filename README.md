@@ -7,8 +7,7 @@ This service uses parallel and zopflipng utilities, make sure they are installed
 
 Homebrew:
 ```bash
-brew install parallel
-brew install zopfli
+brew install parallel zopfli
 ```
 
 To add folder action service, open "PNG Optimize.workflow" and press Install.
