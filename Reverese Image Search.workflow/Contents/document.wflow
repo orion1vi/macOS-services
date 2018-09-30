@@ -65,7 +65,7 @@ par=$(find /usr/local/bin | grep /parallel$ | wc -l)
 if [ $par == 1 ]
 then
 	list=$(find "$@")
-	echo "$list" | /usr/local/bin/parallel curl -F encoded_image=@{} https://www.google.com/searchbyimage/upload | sed -n "s/^.*\(https.*\)\(\".*\)/\1/p" | xargs open
+	echo "$list" | /usr/local/bin/parallel 'open $(curl -F encoded_image=@{} https://www.google.com/searchbyimage/upload | sed -n "s/^.*\(https.*\)\(\".*\)/\1/p")'
 else
 	for f in "$@"
 	do
@@ -187,7 +187,7 @@ fi
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>449.000000:467.000000</string>
+				<string>449.000000:466.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
