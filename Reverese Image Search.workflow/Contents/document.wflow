@@ -60,12 +60,21 @@
 				<dict>
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
-for f in "$@"
-do
-	res=$(curl -F encoded_image=@"$f" https://www.google.com/searchbyimage/upload)
-	href=$(echo "$res" | sed -n "s/^.*\(https.*\)\(\".*\)/\1/p")
-	open "$href"
-done</string>
+
+par=$(find /usr/local/bin | grep /parallel$ | wc -l)
+if [ $par == 1 ]
+then
+	list=$(find "$@")
+	echo "$list" | /usr/local/bin/parallel curl -F encoded_image=@{} https://www.google.com/searchbyimage/upload | sed -n "s/^.*\(https.*\)\(\".*\)/\1/p" | xargs open
+else
+	for f in "$@"
+	do
+		res=$(curl -F encoded_image=@"$f" https://www.google.com/searchbyimage/upload)
+		href=$(echo "$res" | sed -n "s/^.*\(https.*\)\(\".*\)/\1/p")
+		open "$href"
+	done
+fi
+</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -178,7 +187,7 @@ done</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>539.000000:340.000000</string>
+				<string>449.000000:467.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
