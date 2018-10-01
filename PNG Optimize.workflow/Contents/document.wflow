@@ -277,17 +277,31 @@
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
 
-#Get png files
-u=$(for f in "$@"; do echo "$f"; done | grep -i .png | sort -u)
+#Check if parallel is installed
+par=$(find /usr/local/bin | grep /parallel$ | wc -l)
+
+#Get a list of png files
+l=$(for f in "$@"; do echo "$f"; done | grep -i .png | sort -u)
+
+if [ $par == 1 ]
+then
+	#List of unoptimized pngs; parallel
+	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} 2&gt;&amp;1 | grep Optimized | if [ $(wc -l) == 0 ]; then echo {}; fi;')
+	echo "$u" &gt;&gt; p.txt
+else	
+	#List of unoptimized pngs; xargs
+	u=$(printf "%q" "$l" | xargs -I "{}" xattr "{}" 2&gt;&amp;1 | grep Optimized | if [ $(wc -l) == 0 ]; then echo "$l"; fi;)
+	echo "$u" &gt;&gt; x.txt
+fi
 
 #No parallel on 1 png
 if [ $(echo "$u" | wc -l) == "1" ]
 then
 	e=$(printf "%q" "$u" | (time xargs -I {} /usr/local/bin/zopflipng -y {} {} | grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" ") 2&gt;&amp;1 | grep real)
-	printf "%q" "$u" | xargs -I {} md5 -r {} | cut -d ' ' -f 1 | xargs -I {} xattr -w com.apple.metadata:MD5 {} "$u"
+	printf "%q" "$u" | xargs -I {} md5 -r {} | cut -d ' ' -f 1 | xargs -I {} xattr -w com.apple.metadata:MD5 {} "$u" | xattr -w com.apple.metadata:Optimized 1 "$u"
 else
 	e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" "') 2&gt;&amp;1 | grep real)
-	echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {}'
+	echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {} | xattr -w com.apple.metadata:Optimized 1 {}'
 fi
 
 #Time notification
@@ -410,7 +424,7 @@ fi
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>539.000000:628.000000</string>
+				<string>539.000000:832.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
