@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>444.7</string>
+	<string>444.38</string>
 	<key>AMApplicationVersion</key>
-	<string>2.8</string>
+	<string>2.9</string>
 	<key>AMDocumentVersion</key>
 	<string>2</string>
 	<key>actions</key>
@@ -111,7 +111,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>508.500000:112.000000</string>
+				<string>539.000000:111.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Set Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -219,7 +219,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>508.500000:154.000000</string>
+				<string>539.000000:152.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Get Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -283,9 +283,11 @@ u=$(for f in "$@"; do echo "$f"; done | grep -i .png | sort -u)
 #No parallel on 1 png
 if [ $(echo "$u" | wc -l) == "1" ]
 then
-	e=$(echo "$u" | (time xargs -I {} /usr/local/bin/zopflipng -y {} {} | grep "Result size" | xargs -I % osascript -e "display notification \" % \"with title\" PNG Optimize \" ") 2&gt;&amp;1 | grep real)
+	e=$(printf "%q" "$u" | (time xargs -I {} /usr/local/bin/zopflipng -y {} {} | grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" ") 2&gt;&amp;1 | grep real)
+	printf "%q" "$u" | xargs -I {} md5 -r {} | cut -d ' ' -f 1 | xargs -I {} xattr -w com.apple.metadata:MD5 {} "$u"
 else
-	e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | grep "Result size" | xargs -I % osascript -e "display notification \" % \"with title\" PNG Optimize \" "') 2&gt;&amp;1 | grep real)
+	e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" "') 2&gt;&amp;1 | grep real)
+	echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {}'
 fi
 
 #Time notification
@@ -295,7 +297,6 @@ then
 	r=$(sed 's/real	/PNG optimization took: /' &lt;&lt;&lt; "$e")
 	osascript -e 'display notification "'"$r"'" with title "'"$t"'"'
 fi
-
 </string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
@@ -409,9 +410,9 @@ fi
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>508.500000:582.000000</string>
+				<string>539.000000:628.000000</string>
 				<key>nibPath</key>
-				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
+				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
 			<key>isViewVisible</key>
 			<true/>
@@ -419,14 +420,14 @@ fi
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>6A665812-3E95-4C86-AC2D-757E9D4B9021</key>
+		<key>A6E36828-2258-4433-A6D5-834E2B7C86DB</key>
 		<dict>
 			<key>from</key>
 			<string>AFD56567-510B-470D-BAF6-7AF780543EE4 - AFD56567-510B-470D-BAF6-7AF780543EE4</string>
 			<key>to</key>
 			<string>BC942C7A-AD04-46CE-B970-49B9059619F0 - BC942C7A-AD04-46CE-B970-49B9059619F0</string>
 		</dict>
-		<key>A4D87376-70E2-4A97-9620-9A155FC15AF5</key>
+		<key>D4F2B75F-3E8B-4AD3-B9F8-FAFF03EEB91B</key>
 		<dict>
 			<key>from</key>
 			<string>C2A9B6AF-4ABC-4171-A4A6-DB14A49E082F - C2A9B6AF-4ABC-4171-A4A6-DB14A49E082F</string>
