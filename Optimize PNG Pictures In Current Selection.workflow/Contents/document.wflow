@@ -72,21 +72,17 @@ else
 	{ if [ "$u" != "" ]
 		then
 			e=$(echo "$u" | (time /usr/local/bin/parallel /usr/local/bin/zopflipng -y {} {}) 2&gt;&amp;1 | grep real) &amp;&amp; 
-			{ echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {} | xattr -w com.apple.metadata:Optimized 1 {}'; } || 
+			{ echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {} | xattr -w com.apple.metadata:Optimized 1 {}';
+			#Time notification
+			t=$(sed 's/real	/PNG optimization took: /' &lt;&lt;&lt; "$e");
+			osascript -e "display notification \"$t\" with title \"PNG Optimize\" "; } || 
 			{ osascript -e "display notification \"PNG optimization failed\" with title \"PNG Optimize\" "; }
 		else
 			osascript -e "display notification \"PNG files are already optimized\" with title \"PNG Optimize\" ";
 	fi; } || 
 	{ osascript -e "display notification \"Failed fetching metadata\" with title \"PNG Optimize\" "; }
 fi;
-
-#Time notification
-if [ "$u" != "" ]
-then
-	t="PNG Optimize"
-	r=$(sed 's/real	/PNG optimization took: /' &lt;&lt;&lt; "$e")
-	osascript -e "display notification \"$r\" with title \"$t\" "
-fi</string>
+</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -199,7 +195,7 @@ fi</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>629.000000:651.000000</string>
+				<string>629.000000:592.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
