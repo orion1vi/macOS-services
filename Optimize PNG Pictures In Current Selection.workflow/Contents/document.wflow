@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>444.7</string>
+	<string>444.38</string>
 	<key>AMApplicationVersion</key>
-	<string>2.8</string>
+	<string>2.9</string>
 	<key>AMDocumentVersion</key>
 	<string>2</string>
 	<key>actions</key>
@@ -61,15 +61,31 @@
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
 
-list=$(find "$@" -maxdepth 1 | grep -i .png)
-e=$(echo "$list" | (time /usr/local/bin/parallel /usr/local/bin/zopflipng -y {} {}) 2&gt;&amp;1 | grep real)
+#List of selected files
+l=$(find "$@" -maxdepth 1 | grep -i .png)
+if [ "$l" == "" ]
+then
+	osascript -e "display notification \"No PNG files were selected\" with title \"PNG Optimize\" ";
+else
+	#List of unoptimized pngs
+	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} 2&gt;&amp;1 | grep Optimized | if [ $(wc -l) == 0 ]; then echo {}; fi;') &amp;&amp; 
+	{ if [ "$u" != "" ]
+		then
+			e=$(echo "$u" | (time /usr/local/bin/parallel /usr/local/bin/zopflipng -y {} {}) 2&gt;&amp;1 | grep real) &amp;&amp; 
+			{ echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {} | xattr -w com.apple.metadata:Optimized 1 {}'; } || 
+			{ osascript -e "display notification \"PNG optimization failed\" with title \"PNG Optimize\" "; }
+		else
+			osascript -e "display notification \"PNG files are already optimized\" with title \"PNG Optimize\" ";
+	fi; } || 
+	{ osascript -e "display notification \"Failed fetching metadata\" with title \"PNG Optimize\" "; }
+fi;
 
 #Time notification
-if [ "$list" != "" ]
+if [ "$u" != "" ]
 then
 	t="PNG Optimize"
 	r=$(sed 's/real	/PNG optimization took: /' &lt;&lt;&lt; "$e")
-	osascript -e 'display notification "'"$r"'" with title "'"$t"'"'
+	osascript -e "display notification \"$r\" with title \"$t\" "
 fi</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
@@ -183,9 +199,9 @@ fi</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>508.500000:356.000000</string>
+				<string>629.000000:651.000000</string>
 				<key>nibPath</key>
-				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/English.lproj/main.nib</string>
+				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
 			<key>isViewVisible</key>
 			<true/>
@@ -195,6 +211,27 @@ fi</string>
 	<dict/>
 	<key>workflowMetaData</key>
 	<dict>
+		<key>applicationBundleID</key>
+		<string>com.apple.finder</string>
+		<key>applicationBundleIDsByPath</key>
+		<dict>
+			<key>/System/Library/CoreServices/Finder.app</key>
+			<string>com.apple.finder</string>
+		</dict>
+		<key>applicationPath</key>
+		<string>/System/Library/CoreServices/Finder.app</string>
+		<key>applicationPaths</key>
+		<array>
+			<string>/System/Library/CoreServices/Finder.app</string>
+		</array>
+		<key>inputTypeIdentifier</key>
+		<string>com.apple.Automator.fileSystemObject</string>
+		<key>outputTypeIdentifier</key>
+		<string>com.apple.Automator.nothing</string>
+		<key>presentationMode</key>
+		<integer>15</integer>
+		<key>processesInput</key>
+		<integer>0</integer>
 		<key>serviceApplicationBundleID</key>
 		<string>com.apple.finder</string>
 		<key>serviceApplicationPath</key>
@@ -204,6 +241,10 @@ fi</string>
 		<key>serviceOutputTypeIdentifier</key>
 		<string>com.apple.Automator.nothing</string>
 		<key>serviceProcessesInput</key>
+		<integer>0</integer>
+		<key>systemImageName</key>
+		<string>NSActionTemplate</string>
+		<key>useAutomaticInputType</key>
 		<integer>0</integer>
 		<key>workflowTypeIdentifier</key>
 		<string>com.apple.Automator.servicesMenu</string>
