@@ -111,7 +111,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>539.000000:111.000000</string>
+				<string>599.000000:111.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Set Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -219,7 +219,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>539.000000:152.000000</string>
+				<string>599.000000:152.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Get Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -278,11 +278,22 @@
 					<string>#!/bin/bash
 
 #Get a list of png files
-l=$(for f in "$@"; do echo "$f"; done | grep -i .png | sort -u)
+l=$(for f in "$@"; do if [ $(file --mime-type "$f" | grep "image/png" | wc -l) == "1" ]; then echo "$f"; fi; done | grep -i ".png$" | sort -u)
+echo "$l" &gt;&gt; listas.txt
 if [ "$l" == "" ]
 then
 	:;
 else
+	#If png size is 0 bytes; Optimization delay for PS save
+	p=$(if [ ! -s "$l" ]; then echo "$l"; else :; fi;)
+	if [ "$p" != "" ]; then
+		while [[ ! -s "$p" ]]; do 
+			echo kek &gt;&gt; yep.txt
+			sleep 5
+		done
+	fi
+	l="$p"
+	echo "$l" &gt;&gt; toliau.txt
 	#List of unoptimized pngs; parallel
 	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} | grep Optimized | if [ $(wc -l) == 0 ]; then echo {}; fi;') &amp;&amp;
 	{ if [ "$u" != "" ]
@@ -411,7 +422,7 @@ fi;
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>539.000000:627.000000</string>
+				<string>599.000000:749.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -421,14 +432,14 @@ fi;
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>3FF68ED2-D776-4620-8FA9-A42A8EF3C90B</key>
+		<key>01553B64-F0A3-469E-ABCB-19C84199FBB6</key>
 		<dict>
 			<key>from</key>
 			<string>C2A9B6AF-4ABC-4171-A4A6-DB14A49E082F - C2A9B6AF-4ABC-4171-A4A6-DB14A49E082F</string>
 			<key>to</key>
 			<string>AFD56567-510B-470D-BAF6-7AF780543EE4 - AFD56567-510B-470D-BAF6-7AF780543EE4</string>
 		</dict>
-		<key>6820F284-DD0F-4FCC-BAE8-C7CE61477201</key>
+		<key>E065B82C-7EB0-4746-965C-4945442ADE61</key>
 		<dict>
 			<key>from</key>
 			<string>AFD56567-510B-470D-BAF6-7AF780543EE4 - AFD56567-510B-470D-BAF6-7AF780543EE4</string>
