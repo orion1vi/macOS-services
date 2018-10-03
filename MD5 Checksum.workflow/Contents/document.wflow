@@ -63,16 +63,15 @@
 for file in "$@"
 do
 	md5=$(md5 -r "$file" 2&gt;&amp;1)
-	#echo "$md5"
 	if [ -f "$file" ]
 	then
 		md5i=( $md5 )
 		path=$(echo "${md5i[@]}" | awk '{$1=""; print $0}')
-		name=$(basename "$path")
+		name=$(sed 's/\([\\"]\)/\\\1/g' &lt;&lt;&lt; $(basename "$path"))
 		osascript -e "display notification \"${md5i[0]}\" with title \"MD5 Checksum\" subtitle \"$name\" "
 	else
 		path=$(echo "$md5" | sed 's/md5: \(\/.*\):.*/\1/p')
-		name=$(basename "$path")
+		name=$(sed 's/\([\\"]\)/\\\1/g' &lt;&lt;&lt; $(basename "$path"))
     	osascript -e "display notification \"Is a directory\" with title \"MD5 Checksum\" subtitle \"$name\" "
 	fi
 done</string>
@@ -188,7 +187,7 @@ done</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>449.000000:590.000000</string>
+				<string>554.000000:466.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
