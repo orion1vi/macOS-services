@@ -111,7 +111,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>554.000000:111.000000</string>
+				<string>539.000000:111.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Set Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -219,7 +219,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>554.000000:152.000000</string>
+				<string>539.000000:152.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Get Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -277,38 +277,27 @@
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
 
-#Check if parallel is installed
-par=$(find /usr/local/bin | grep /parallel$ | wc -l)
-
 #Get a list of png files
 l=$(for f in "$@"; do echo "$f"; done | grep -i .png | sort -u)
-
-if [ $par != 1 ]
+if [ "$l" == "" ]
 then
-	#List of unoptimized pngs; parallel
-	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} 2&gt;&amp;1 | grep Optimized | if [ $(wc -l) == 0 ]; then echo {}; fi;')
-else	
-	#List of unoptimized pngs; xargs
-	#u=$(printf "%q" "$l" | xargs -I "{}" xattr "{}" 2&gt;&amp;1 | grep Optimized | if [ $(wc -l) == 0 ]; then echo "$l"; fi;)
-	u=$(find "$l" -exec xattr {} \; | grep Optimized | if [ $(wc -l) == 0 ]; then echo "$l"; fi;)
-fi
-
-#No parallel on 1 png
-if [ $(echo "$u" | wc -l) == "1" ]
-then
-	e=$(find "$u" -exec time /usr/local/bin/zopflipng -y {} {} \; | grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" ")
+	:;
 else
-	e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" "') 2&gt;&amp;1 | grep real)
-	echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {} | xattr -w com.apple.metadata:Optimized 1 {}'
-fi
-
-#Time notification
-if [ "$u" != "" ]
-then
-	t="PNG Optimize"
-	r=$(sed 's/real	/PNG optimization took: /' &lt;&lt;&lt; "$e")
-	osascript -e 'display notification "'"$r"'" with title "'"$t"'"'
-fi
+	#List of unoptimized pngs; parallel
+	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} | grep Optimized | if [ $(wc -l) == 0 ]; then echo {}; fi;') &amp;&amp;
+	{ if [ "$u" != "" ]
+		then
+			e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" "') 2&gt;&amp;1 | grep real) &amp;&amp;
+			{ echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {} | xattr -w com.apple.metadata:Optimized 1 {}';
+			#Time notification
+			t=$(sed 's/real	/PNG optimization took: /' &lt;&lt;&lt; "$e");
+			osascript -e "display notification \"$t\" with title \"PNG Optimize\" "; } ||
+			{ osascript -e "display notification \"PNG optimization failed\" with title \"PNG Optimize\" "; }
+		else
+			:;
+	fi; } || 
+	{ osascript -e "display notification \"Failed to fetch metadata\" with title \"PNG Optimize\" "; }
+fi;
 </string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
@@ -422,7 +411,7 @@ fi
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>554.000000:1184.000000</string>
+				<string>539.000000:627.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
