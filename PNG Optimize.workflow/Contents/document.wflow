@@ -111,7 +111,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>599.000000:111.000000</string>
+				<string>659.000000:111.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Set Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -219,7 +219,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>599.000000:152.000000</string>
+				<string>659.000000:152.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Get Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -278,28 +278,30 @@
 					<string>#!/bin/bash
 
 #Get a list of png files
-l=$(for f in "$@"; do if [ $(file --mime-type "$f" | grep "image/png" | wc -l) == "1" ]; then echo "$f"; fi; done | grep -i ".png$" | sort -u)
-echo "$l" &gt;&gt; listas.txt
+l=$(for f in "$@"; do if [ $(/usr/local/bin/identify "$f" | wc -l) == "1" ] || [ $(xattr -l "$f" | grep "|PNG" | wc -l) == "1" ]; then echo "$f"; fi; done | sort -u) &amp;&amp;
 if [ "$l" == "" ]
 then
 	:;
 else
-	#If png size is 0 bytes; Optimization delay for PS save
-	p=$(if [ ! -s "$l" ]; then echo "$l"; else :; fi;)
+	#If png size is 0 bytes; Optimization delay; PS saving workaround;
+	p=$(echo "$l" | /usr/local/bin/parallel test ! -s {} &amp;&amp; echo "$l") &amp;&amp;
 	if [ "$p" != "" ]; then
+		l="$p";
 		while [[ ! -s "$p" ]]; do 
-			echo kek &gt;&gt; yep.txt
 			sleep 5
 		done
-	fi
-	l="$p"
-	echo "$l" &gt;&gt; toliau.txt
+	fi;
 	#List of unoptimized pngs; parallel
-	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} | grep Optimized | if [ $(wc -l) == 0 ]; then echo {}; fi;') &amp;&amp;
-	{ if [ "$u" != "" ]
-		then
-			e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" "') 2&gt;&amp;1 | grep real) &amp;&amp;
-			{ echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {} | xattr -w com.apple.metadata:Optimized 1 {}';
+	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} | grep MD5opt | if [ $(wc -l) == 0 ]; then echo {}; fi;') &amp;&amp;
+	{ if [ "$u" != "" ]; then
+			e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | tee &gt;(grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" subtitle \"$(echo {/} | sed '\''s/\([\\"]\)/\\\1/g'\'')\" ")') 2&gt;&amp;1 | grep "error\|real" ) &amp;&amp;
+			{
+			if [ $(echo "$e" | wc -l) != "1" ]; then
+				f=$(echo "$e" | head -1)
+				osascript -e "display notification \"$f\" with title \"PNG Optimize\" ";
+				exit 1;
+			fi;
+				echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5opt hash {}';
 			#Time notification
 			t=$(sed 's/real	/PNG optimization took: /' &lt;&lt;&lt; "$e");
 			osascript -e "display notification \"$t\" with title \"PNG Optimize\" "; } ||
@@ -422,7 +424,7 @@ fi;
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>599.000000:749.000000</string>
+				<string>659.000000:801.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
