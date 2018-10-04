@@ -61,17 +61,22 @@
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
 
-l=$(find "$@" | grep -i .png)
+l=$(find "$@" | /usr/local/bin/parallel 'if [ $(/usr/local/bin/identify {} | wc -l) == "1" ] || [ $(xattr -l {} | grep "|PNG" | wc -l) == "1" ]; then echo {}; fi;') &amp;&amp;
 if [ "$l" == "" ]
 then
 	osascript -e "display notification \"No PNG files were selected\" with title \"PNG Optimize\" ";
 else
 	#List of unoptimized pngs
-	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} 2&gt;&amp;1 | grep Optimized | if [ $(wc -l) == 0 ]; then echo {}; fi;') &amp;&amp; 
-	{ if [ "$u" != "" ]
-		then
-			e=$(echo "$u" | (time /usr/local/bin/parallel /usr/local/bin/zopflipng -y {} {}) 2&gt;&amp;1 | grep real) &amp;&amp; 
-			{ echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5 hash {} | xattr -w com.apple.metadata:Optimized 1 {}';
+	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} | grep MD5opt | if [ $(wc -l) == 0 ]; then echo {}; fi;') &amp;&amp; 
+	{ if [ "$u" != "" ]; then
+			e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | tee &gt;(grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" subtitle \"$(echo {/} | sed '\''s/\([\\"]\)/\\\1/g'\'')\" ")') 2&gt;&amp;1 | grep "error\|real" ) &amp;&amp;
+			{ 
+			if [ $(echo "$e" | wc -l) != "1" ]; then
+				f=$(echo "$e" | head -1)
+				osascript -e "display notification \"$f\" with title \"PNG Optimize\" ";
+				exit 1;
+			fi;
+				echo "$u" | /usr/local/bin/parallel 'md5 -r {} | cut -d "'" "'" -f 1 | xargs -I hash xattr -w com.apple.metadata:MD5opt hash {}';
 			#Time notification
 			t=$(sed 's/real	/PNG optimization took: /' &lt;&lt;&lt; "$e");
 			osascript -e "display notification \"$t\" with title \"PNG Optimize\" "; } || 
@@ -79,8 +84,9 @@ else
 		else
 			osascript -e "display notification \"PNG files are already optimized\" with title \"PNG Optimize\" ";
 	fi; } || 
-	{ osascript -e "display notification \"Failed fetching metadata\" with title \"PNG Optimize\" "; }
-fi;</string>
+	{ osascript -e "display notification \"Failed to fetch metadata\" with title \"PNG Optimize\" "; }
+fi;
+</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -193,7 +199,7 @@ fi;</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>449.000000:579.000000</string>
+				<string>569.000000:671.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
