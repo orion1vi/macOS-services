@@ -62,7 +62,7 @@
 					<string>#!/bin/bash
 
 #List of selected files
-l=$(find "$@" -maxdepth 1 | /usr/local/bin/parallel 'if [ $(/usr/local/bin/identify {} | wc -l) == "1" ] || [ $(xattr -l {} | grep "|PNG" | wc -l) == "1" ]; then echo {}; fi;') &amp;&amp;
+l=$(find "$@" -maxdepth 1 | /usr/local/bin/parallel 'if [ $(/usr/local/bin/identify {} -format "%m\n" | grep PNG | wc -l) == "1" ] || [ $(xattr -l {} | grep "|PNG" | wc -l) == "1" ]; then echo {}; fi;') &amp;&amp;
 if [ "$l" == "" ]
 then
 	osascript -e "display notification \"No PNG files were selected\" with title \"PNG Optimize\" ";
@@ -200,7 +200,7 @@ fi;
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>569.000000:665.000000</string>
+				<string>554.000000:686.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -244,7 +244,7 @@ fi;
 		<key>serviceProcessesInput</key>
 		<integer>0</integer>
 		<key>systemImageName</key>
-		<string>NSActionTemplate</string>
+		<string>NSTouchBarControlStripScreenshot</string>
 		<key>useAutomaticInputType</key>
 		<integer>0</integer>
 		<key>workflowTypeIdentifier</key>
