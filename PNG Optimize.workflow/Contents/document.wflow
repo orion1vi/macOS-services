@@ -111,7 +111,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>659.000000:111.000000</string>
+				<string>620.000000:111.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Set Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -219,7 +219,7 @@
 				<key>isViewVisible</key>
 				<false/>
 				<key>location</key>
-				<string>659.000000:152.000000</string>
+				<string>620.000000:152.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Get Value of Variable.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -278,7 +278,7 @@
 					<string>#!/bin/bash
 
 #Get a list of png files
-l=$(for f in "$@"; do if [ $(/usr/local/bin/identify "$f" | wc -l) == "1" ] || [ $(xattr -l "$f" | grep "|PNG" | wc -l) == "1" ]; then echo "$f"; fi; done | sort -u) &amp;&amp;
+l=$(for f in "$@"; do if [ $(/usr/local/bin/identify "$f" -format "%m\n" | grep PNG | wc -l) == "1" ] || [ $(xattr -l "$f" | grep "|PNG" | wc -l) == "1" ]; then echo "$f"; fi; done | sort -u) &amp;&amp;
 if [ "$l" == "" ]
 then
 	:;
@@ -424,7 +424,7 @@ fi;
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>659.000000:801.000000</string>
+				<string>620.000000:801.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
