@@ -61,19 +61,16 @@
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
 
-par=$(find /usr/local/bin | grep /parallel$ | wc -l)
-if [ $par == 1 ]
-then
-	list=$(find "$@")
-	echo "$list" | /usr/local/bin/parallel 'open $(curl -F encoded_image=@{} https://www.google.com/searchbyimage/upload | sed -n "s/^.*\(https.*\)\(\".*\)/\1/p")'
-else
+#parallel
+[ $(find /usr/local/bin/parallel) ] &amp;&amp;
+	$(find "$@" | /usr/local/bin/parallel 'open $(curl -F encoded_image=@{} https://www.google.com/searchbyimage/upload | sed -n "s/^.*\(https.*\)\(\".*\)/\1/p")') ||
+#no parallel
 	for f in "$@"
 	do
 		res=$(curl -F encoded_image=@"$f" https://www.google.com/searchbyimage/upload)
 		href=$(echo "$res" | sed -n "s/^.*\(https.*\)\(\".*\)/\1/p")
 		open "$href"
 	done
-fi
 </string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
@@ -187,7 +184,7 @@ fi
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>449.000000:466.000000</string>
+				<string>554.000000:420.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -233,7 +230,7 @@ fi
 		<key>serviceProcessesInput</key>
 		<integer>0</integer>
 		<key>systemImageName</key>
-		<string>NSTouchBarControlStripScreenshot</string>
+		<string>NSTouchBarControlStripSpotlight</string>
 		<key>useAutomaticInputType</key>
 		<integer>0</integer>
 		<key>workflowTypeIdentifier</key>
