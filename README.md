@@ -2,6 +2,14 @@
 macOS service that adds reverse image search to Finder
 
 # Install
+This service can optionally use parallel for faster performance.
+
+Homebrew:
+
+```bash
+brew install parallel
+```
+
 To add service, open "Reverese Image Search.workflow" and press Install.
 
 Installation directory: ~/Library/Services/
