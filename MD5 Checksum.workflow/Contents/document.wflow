@@ -60,6 +60,8 @@
 				<dict>
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
+
+[ "$#" -eq "2" ] &amp;&amp; (st=$(md5 -r "$1" | cut -d ' ' -f 1); nd=$(md5 -r "$2" | cut -d ' ' -f 1) &amp;&amp; [[ "$st" = "$nd" ]] &amp;&amp; $(osascript -e "display notification \"$st\" with title \"PNG Optimize\" subtitle \"Both files have the same MD5 hash\" ")) ||
 for file in "$@"
 do
 	md5=$(md5 -r "$file" 2&gt;&amp;1)
@@ -67,11 +69,11 @@ do
 	then
 		md5i=( $md5 )
 		path=$(echo "${md5i[@]}" | awk '{$1=""; print $0}')
-		name=$(sed 's/\([\\"]\)/\\\1/g' &lt;&lt;&lt; $(basename "$path"))
+		name=$(basename "$path" | sed 's/\([\\"]\)/\\\1/g')
 		osascript -e "display notification \"${md5i[0]}\" with title \"MD5 Checksum\" subtitle \"$name\" "
 	else
 		path=$(echo "$md5" | sed 's/md5: \(\/.*\):.*/\1/p')
-		name=$(sed 's/\([\\"]\)/\\\1/g' &lt;&lt;&lt; $(basename "$path"))
+		name=$(basename "$path" | sed 's/\([\\"]\)/\\\1/g')
     	osascript -e "display notification \"Is a directory\" with title \"MD5 Checksum\" subtitle \"$name\" "
 	fi
 done</string>
@@ -187,7 +189,7 @@ done</string>
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>554.000000:466.000000</string>
+				<string>554.000000:514.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
