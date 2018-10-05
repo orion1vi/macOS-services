@@ -70,7 +70,7 @@ else
 	#List of unoptimized pngs
 	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} | grep MD5opt | if [ $(wc -l) == 0 ]; then echo {}; fi;') &amp;&amp; 
 	{ if [ "$u" != "" ]; then
-			e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | tee &gt;(grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" subtitle \"$(echo {/} | sed '\''s/\([\\"]\)/\\\1/g'\'')\" ")') 2&gt;&amp;1 | grep "error\|real" ) &amp;&amp;
+			e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | tee &gt;(grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" subtitle \"$(echo {/} | cut -c1-50 | sed '\''s/\([\\"]\)/\\\1/g'\'')\" ")') 2&gt;&amp;1 | grep "error\|real" ) &amp;&amp;
 			{ 
 			if [ $(echo "$e" | wc -l) != "1" ]; then
 				f=$(echo "$e" | head -1)
@@ -83,7 +83,7 @@ else
 			osascript -e "display notification \"$t\" with title \"PNG Optimize\" "; } || 
 			{ osascript -e "display notification \"PNG optimization failed\" with title \"PNG Optimize\" "; }
 		else
-			osascript -e "display notification \"PNG files are already optimized\" with title \"PNG Optimize\" ";
+			osascript -e "display notification \"Selected PNG pictures are already optimized\" with title \"PNG Optimize\" ";
 	fi; } || 
 	{ osascript -e "display notification \"Failed to fetch metadata\" with title \"PNG Optimize\" "; }
 fi;
@@ -200,7 +200,7 @@ fi;
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>554.000000:686.000000</string>
+				<string>554.000000:677.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
