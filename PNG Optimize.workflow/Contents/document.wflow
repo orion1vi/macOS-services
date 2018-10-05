@@ -294,7 +294,7 @@ else
 	#List of unoptimized pngs; parallel
 	u=$(echo "$l" | /usr/local/bin/parallel 'xattr {} | grep MD5opt | if [ $(wc -l) == 0 ]; then echo {}; fi;') &amp;&amp;
 	{ if [ "$u" != "" ]; then
-			e=$(echo "$u" | (time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | tee &gt;(grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" subtitle \"$(echo {/} | sed '\''s/\([\\"]\)/\\\1/g'\'')\" ")') 2&gt;&amp;1 | grep "error\|real" ) &amp;&amp;
+			e=$(echo "$u" | { time /usr/local/bin/parallel '/usr/local/bin/zopflipng -y {} {} | tee &gt;(grep "Result size" | xargs -I % osascript -e "display notification \"%\" with title \"PNG Optimize\" subtitle \"$(echo {/} | cut -c1-50 | sed '\''s/\([\\"]\)/\\\1/g'\'')\" ")'; } 2&gt;&amp;1 | grep "error\|real" ) &amp;&amp;
 			{
 			if [ $(echo "$e" | wc -l) != "1" ]; then
 				f=$(echo "$e" | head -1)
@@ -424,7 +424,7 @@ fi;
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>620.000000:801.000000</string>
+				<string>620.000000:818.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
@@ -434,14 +434,14 @@ fi;
 	</array>
 	<key>connectors</key>
 	<dict>
-		<key>01553B64-F0A3-469E-ABCB-19C84199FBB6</key>
+		<key>0A861347-AD26-488D-AD67-004ECB25A1BB</key>
 		<dict>
 			<key>from</key>
 			<string>C2A9B6AF-4ABC-4171-A4A6-DB14A49E082F - C2A9B6AF-4ABC-4171-A4A6-DB14A49E082F</string>
 			<key>to</key>
 			<string>AFD56567-510B-470D-BAF6-7AF780543EE4 - AFD56567-510B-470D-BAF6-7AF780543EE4</string>
 		</dict>
-		<key>E065B82C-7EB0-4746-965C-4945442ADE61</key>
+		<key>ADCFAA8B-A9BC-4F90-BC4E-24FB16B28A09</key>
 		<dict>
 			<key>from</key>
 			<string>AFD56567-510B-470D-BAF6-7AF780543EE4 - AFD56567-510B-470D-BAF6-7AF780543EE4</string>
