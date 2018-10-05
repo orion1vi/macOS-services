@@ -61,8 +61,9 @@
 					<key>COMMAND_STRING</key>
 					<string>#!/bin/bash
 
-#Use parallel if installed
+#parallel
 [ $(find /usr/local/bin/parallel) ] &amp;&amp; $(find "$@" | /usr/local/bin/parallel 'mv {} "$({//})/$(openssl rand -hex 4)"') ||
+#no parallel
 for i in "$@"; do
 	case ${i##*/} in
 		(*0.tar.*) ext="0.tar."${i##*.};;
@@ -70,7 +71,7 @@ for i in "$@"; do
 		(?*.*) ext=${i##*.};;
 		(*) ext=;;
 	esac
-	mv "$i" "$(dirname "$i")/`openssl rand -hex 4`.$ext"; 
+	mv "$i" "$(dirname "$i")/$(openssl rand -hex 4).$ext"; 
 done
 </string>
 					<key>CheckedForUserDefaultShell</key>
@@ -185,7 +186,7 @@ done
 				<key>isViewVisible</key>
 				<true/>
 				<key>location</key>
-				<string>554.000000:420.000000</string>
+				<string>554.000000:441.000000</string>
 				<key>nibPath</key>
 				<string>/System/Library/Automator/Run Shell Script.action/Contents/Resources/Base.lproj/main.nib</string>
 			</dict>
